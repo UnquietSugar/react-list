@@ -9,9 +9,11 @@ const reducer = (
 		case 'add':
 			return { ...state, list: [action.payload.value, ...state.list] };
 		case 'clear':
-			return { ...state, list: [] };
+			return { ...state, list: [], historyList: [] };
 		case 'add-list':
 			return { ...state, list: action.payload.value };
+		case 'add-history-list':
+			return { ...state, historyList: action.payload.value };
 		case 'undo':
 			return {
 				...state,

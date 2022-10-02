@@ -13,6 +13,10 @@ type Action =
 			payload: { value: ListItem[] };
 	  }
 	| {
+			type: 'add-history-list';
+			payload: { value: ListItem[] };
+	  }
+	| {
 			type: 'undo';
 	  }
 	| {
