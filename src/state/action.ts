@@ -7,7 +7,7 @@ type Action =
 			type: 'clear';
 	  }
 	| {
-			type: 'addList';
+			type: 'add-list';
 			payload: { value: string[] };
 	  };
 

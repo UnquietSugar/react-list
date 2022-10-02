@@ -6,6 +6,8 @@ const reducer = (state: { list: string[] }, action: Action) => {
 			return { ...state, list: [...state.list, action.payload.value] };
 		case 'clear':
 			return { ...state, list: [] };
+		case 'add-list':
+			return { ...state, list: action.payload.value };
 		default:
 			return state;
 	}

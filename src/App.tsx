@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import useStorage from './hooks/useStorage';
 import { useStoreContext } from './state/state';
 
 const App = () => {
 	const [inputValue, setInputValue] = useState<string>('');
 	const { state, dispatch } = useStoreContext();
+	const { setList, getList, removeList } = useStorage();
+	const isLoaded = useRef<boolean>(false); // needed because of react 18 strict mode
 
 	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInputValue(e.currentTarget?.value);
@@ -24,7 +27,27 @@ const App = () => {
 			type: 'clear',
 		});
 		setInputValue('');
+		removeList();
 	};
+
+	useEffect(() => {
+		if (state.list.length > 0) {
+			setList(state.list);
+		}
+	}, [state.list]);
+
+	useEffect(() => {
+		if (state.list.length === 0 && !isLoaded.current) {
+			const list = getList();
+			if (list) {
+				dispatch({
+					type: 'add-list',
+					payload: { value: list },
+				});
+			}
+			isLoaded.current = true;
+		}
+	}, []);
 
 	return (
 		<div>
