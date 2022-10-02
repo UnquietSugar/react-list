@@ -19,11 +19,18 @@ const App = () => {
 		}
 	};
 
+	const onClear = () => {
+		dispatch({
+			type: 'clear',
+		});
+		setInputValue('');
+	};
+
 	return (
 		<div>
 			<div className='center'>
 				<button>Undo</button>
-				<button>Clear</button>
+				<button onClick={onClear}>Clear</button>
 				<button>Redo</button>
 			</div>
 			<div className='center'>
