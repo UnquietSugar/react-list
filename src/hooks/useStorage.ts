@@ -1,5 +1,7 @@
+import { ListItem } from '../state/state';
+
 const useStorage = () => {
-	const setList = (arr: string[]) => {
+	const setList = (arr: ListItem[]) => {
 		sessionStorage.setItem('list', JSON.stringify(arr));
 	};
 	const getList = () => {

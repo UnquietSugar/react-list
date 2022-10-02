@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import guid from './helpers/guid';
 import useStorage from './hooks/useStorage';
 import { useStoreContext } from './state/state';
 
@@ -16,7 +17,7 @@ const App = () => {
 		if (inputValue !== '') {
 			dispatch({
 				type: 'add',
-				payload: { value: inputValue },
+				payload: { value: { item: inputValue, id: guid() } },
 			});
 			setInputValue('');
 		}
@@ -28,6 +29,16 @@ const App = () => {
 		});
 		setInputValue('');
 		removeList();
+	};
+
+	const onItemClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+		setInputValue(e.currentTarget.innerText);
+		const list = state.list.filter((item) => item.id !== e.currentTarget.id);
+		dispatch({
+			type: 'add-list',
+			payload: { value: list },
+		});
+		setList(state.list);
 	};
 
 	useEffect(() => {
@@ -64,8 +75,10 @@ const App = () => {
 			</div>
 			<div className='list-container'>
 				<ul>
-					{state.list.map((item, index) => (
-						<li key={item + index}>{item}</li>
+					{state.list.map((item) => (
+						<li key={item.id} id={item.id} onClick={onItemClick}>
+							{item.item}
+						</li>
 					))}
 				</ul>
 			</div>

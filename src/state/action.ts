@@ -1,14 +1,16 @@
+import { ListItem } from './state';
+
 type Action =
 	| {
 			type: 'add';
-			payload: { value: string };
+			payload: { value: ListItem };
 	  }
 	| {
 			type: 'clear';
 	  }
 	| {
 			type: 'add-list';
-			payload: { value: string[] };
+			payload: { value: ListItem[] };
 	  };
 
 export default Action;

@@ -2,9 +2,13 @@ import React, { FC, createContext, useContext, useReducer, useMemo } from 'react
 import Action from './action';
 import reducer from './reducer';
 
+export interface ListItem {
+	item: string;
+	id: string;
+}
 export interface Store {
 	state: {
-		list: string[];
+		list: ListItem[];
 	};
 	dispatch: React.Dispatch<Action>;
 }
