@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import guid from './helpers/guid';
 import useStorage from './hooks/useStorage';
 import { useStoreContext } from './state/state';
@@ -6,7 +6,8 @@ import { useStoreContext } from './state/state';
 const App = () => {
 	const [inputValue, setInputValue] = useState<string>('');
 	const { state, dispatch } = useStoreContext();
-	const { setList, getList, removeList } = useStorage();
+	const { setList, getList, removeList, setHistory, getHistory, removeHistory } =
+		useStorage();
 	const isLoaded = useRef<boolean>(false); // needed because of react 18 strict mode
 
 	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +23,15 @@ const App = () => {
 			setInputValue('');
 		}
 	};
+
+	const onEnterKey = useCallback(
+		(e: React.KeyboardEvent<HTMLInputElement>) => {
+			if (e.key === 'Enter') {
+				saveValue();
+			}
+		},
+		[inputValue]
+	);
 
 	const onClear = () => {
 		dispatch({
@@ -41,11 +51,26 @@ const App = () => {
 		setList(state.list);
 	};
 
-	useEffect(() => {
+	const onUndo = () => {
 		if (state.list.length > 0) {
-			setList(state.list);
+			dispatch({
+				type: 'undo',
+			});
 		}
-	}, [state.list]);
+	};
+
+	const onRedo = () => {
+		if (state.historyList.length > 0) {
+			dispatch({
+				type: 'redo',
+			});
+		}
+	};
+
+	useEffect(() => {
+		setList(state.list);
+		setHistory(state.historyList);
+	}, [state.list, state.historyList]);
 
 	useEffect(() => {
 		if (state.list.length === 0 && !isLoaded.current) {
@@ -63,12 +88,17 @@ const App = () => {
 	return (
 		<div>
 			<div className='center'>
-				<button>Undo</button>
+				<button onClick={onUndo}>Undo</button>
 				<button onClick={onClear}>Clear</button>
-				<button>Redo</button>
+				<button onClick={onRedo}>Redo</button>
 			</div>
 			<div className='center'>
-				<input type='text' value={inputValue} onChange={onInputChange} />
+				<input
+					type='text'
+					value={inputValue}
+					onChange={onInputChange}
+					onKeyDown={onEnterKey}
+				/>
 			</div>
 			<div className='center'>
 				<button onClick={saveValue}>Save</button>

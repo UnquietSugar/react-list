@@ -9,6 +9,7 @@ export interface ListItem {
 export interface Store {
 	state: {
 		list: ListItem[];
+		historyList: ListItem[];
 	};
 	dispatch: React.Dispatch<Action>;
 }
@@ -20,6 +21,7 @@ export const useStoreContext = () => useContext(StoreContext);
 export const StoreContextProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [state, dispatch] = useReducer(reducer, {
 		list: [],
+		historyList: [],
 	});
 
 	const stateMemo = useMemo(() => ({ state, dispatch }), [state]);

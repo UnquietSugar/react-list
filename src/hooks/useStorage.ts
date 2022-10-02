@@ -11,10 +11,23 @@ const useStorage = () => {
 	};
 	const removeList = () => sessionStorage.removeItem('list');
 
+	const setHistory = (arr: ListItem[]) => {
+		sessionStorage.setItem('history', JSON.stringify(arr));
+	};
+	const getHistory = () => {
+		const item = sessionStorage.getItem('history');
+		if (item) return JSON.parse(item);
+		return undefined;
+	};
+	const removeHistory = () => sessionStorage.removeItem('history');
+
 	return {
 		setList,
 		getList,
 		removeList,
+		setHistory,
+		getHistory,
+		removeHistory,
 	};
 };
 

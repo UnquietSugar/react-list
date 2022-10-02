@@ -11,6 +11,12 @@ type Action =
 	| {
 			type: 'add-list';
 			payload: { value: ListItem[] };
+	  }
+	| {
+			type: 'undo';
+	  }
+	| {
+			type: 'redo';
 	  };
 
 export default Action;
