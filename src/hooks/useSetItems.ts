@@ -14,7 +14,6 @@ const useSetItems = () => {
 			if (state.list.length === 0 || state.historyList.length === 0) {
 				const list = getList();
 				const historyList = getHistory();
-				console.log(historyList);
 				if (list) {
 					addList(list);
 				}
