@@ -1,9 +1,8 @@
-import { useReducer } from 'react';
 import InputAction from '../../enums/InputAction';
-import reducer from './reducer';
+import useInputMemo from './useInputMemo';
 
 const useInputControlls = () => {
-	const [state, dispatch] = useReducer(reducer, { values: [], index: -1 });
+	const { state, dispatch } = useInputMemo();
 
 	const add = (value: string) => {
 		dispatch({
@@ -14,17 +13,11 @@ const useInputControlls = () => {
 
 	const undo = () => {
 		if (state.index - 1 < -1) return;
-		if (state.index - 1 === -1) {
-			dispatch({
-				type: InputAction.undo,
-			});
-			return '';
-		}
 		if (state.index > -1) {
 			dispatch({
 				type: InputAction.undo,
 			});
-			return state.values[state.index - 1];
+			return state.values[state.index - 1] ?? '';
 		}
 		return null;
 	};
