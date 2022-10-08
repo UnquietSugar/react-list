@@ -4,6 +4,7 @@ import useListControlls from './hooks/useListControlls';
 import { useStoreContext } from './state/state';
 import useSetItems from './hooks/useSetItems';
 import cx from 'classnames';
+import useInputControlls from './hooks/useInputControlls/useInputControlls';
 
 const App = () => {
 	const [inputValue, setInputValue] = useState<string>('');
@@ -11,10 +12,12 @@ const App = () => {
 	const [isInputFocused, toggle] = useState<boolean>(false);
 	const { setList } = useStorage();
 	const { list } = useListControlls();
+	const { input } = useInputControlls();
 	useSetItems();
 
 	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInputValue(e.currentTarget?.value);
+		input.add(e.currentTarget?.value);
 	};
 
 	const saveValue = () => {
@@ -33,12 +36,17 @@ const App = () => {
 	const onUndo = () => {
 		if (isInputFocused) {
 			list.undo();
+		} else {
+			const value = input.undo();
+			if (!!value || value === '') setInputValue(value);
 		}
 	};
 
 	const onClear = () => {
 		if (isInputFocused) {
 			list.clear();
+		} else {
+			input.clear();
 			setInputValue('');
 		}
 	};
@@ -46,6 +54,9 @@ const App = () => {
 	const onRedo = () => {
 		if (isInputFocused) {
 			list.redo();
+		} else {
+			const value = input.redo();
+			if (value) setInputValue(value);
 		}
 	};
 
@@ -76,7 +87,7 @@ const App = () => {
 					className={cx(!isInputFocused && 'focused-input')}
 				/>
 				<label className='switch'>
-					<input type='checkbox' checked={isInputFocused} onClick={onToggle} />
+					<input type='checkbox' checked={isInputFocused} onChange={onToggle} />
 					<span className='slider'></span>
 				</label>
 			</div>

@@ -1,26 +1,27 @@
+import ListAction from '../enums/ListAction';
 import { ListItem } from './state';
 
 type Action =
 	| {
-			type: 'add';
+			type: ListAction.add;
 			payload: { value: ListItem };
 	  }
 	| {
-			type: 'clear';
+			type: ListAction.clear;
 	  }
 	| {
-			type: 'add-list';
+			type: ListAction.addList;
 			payload: { value: ListItem[] };
 	  }
 	| {
-			type: 'add-history-list';
+			type: ListAction.addHistoryList;
 			payload: { value: ListItem[] };
 	  }
 	| {
-			type: 'undo';
+			type: ListAction.undo;
 	  }
 	| {
-			type: 'redo';
+			type: ListAction.redo;
 	  };
 
 export default Action;

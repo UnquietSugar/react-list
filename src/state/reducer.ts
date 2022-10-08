@@ -1,3 +1,4 @@
+import ListAction from '../enums/ListAction';
 import Action from './action';
 import { ListItem } from './state';
 
@@ -6,21 +7,21 @@ const reducer = (
 	action: Action
 ) => {
 	switch (action.type) {
-		case 'add':
+		case ListAction.add:
 			return { ...state, list: [action.payload.value, ...state.list] };
-		case 'clear':
+		case ListAction.clear:
 			return { ...state, list: [], historyList: [] };
-		case 'add-list':
+		case ListAction.addList:
 			return { ...state, list: action.payload.value };
-		case 'add-history-list':
+		case ListAction.addHistoryList:
 			return { ...state, historyList: action.payload.value };
-		case 'undo':
+		case ListAction.undo:
 			return {
 				...state,
 				historyList: [state.list[0], ...state.historyList],
 				list: state.list.slice(1),
 			};
-		case 'redo':
+		case ListAction.redo:
 			return {
 				...state,
 				list: [state.historyList[0], ...state.list],
