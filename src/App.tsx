@@ -1,10 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import useStorage from './hooks/useStorage';
 import useListControlls from './hooks/useListControlls';
 import { useStoreContext } from './state/state';
 import useSetItems from './hooks/useSetItems';
 import cx from 'classnames';
 import useInputControlls from './hooks/useInputControlls/useInputControlls';
+import ListOfValues from './components/ListOfValues';
+import Buttons from './components/Buttons';
 
 const App = () => {
 	const [inputValue, setInputValue] = useState<string>('');
@@ -72,39 +74,29 @@ const App = () => {
 	};
 
 	return (
-		<div>
-			<div className={cx('center', isInputFocused ? 'focused-list' : 'focused-input')}>
-				<button onClick={onUndo}>Undo</button>
-				<button onClick={onClear}>Clear</button>
-				<button onClick={onRedo}>Redo</button>
-			</div>
-			<div className='center'>
-				<input
-					type='text'
-					value={inputValue}
-					onChange={onInputChange}
-					onKeyDown={onEnterKey}
-					className={cx(!isInputFocused && 'focused-input')}
-				/>
-				<label className='switch'>
-					<input type='checkbox' checked={isInputFocused} onChange={onToggle} />
-					<span className='slider'></span>
-				</label>
-			</div>
-			<div className='center'>
-				<button onClick={saveValue}>Save</button>
-			</div>
-			<div className={cx('list-container', isInputFocused && 'focused-list')}>
-				<p className='center'>Values:</p>
-				<ul>
-					{state.list.map((item) => (
-						<li key={item.id} id={item.id} onClick={onItemClick}>
-							{item.item}
-						</li>
-					))}
-				</ul>
-			</div>
-		</div>
+		<main>
+			<Buttons
+				isInputFocused
+				onClear={onClear}
+				onRedo={onRedo}
+				onUndo={onUndo}
+				saveValue={saveValue}>
+				<div className='center'>
+					<input
+						type='text'
+						value={inputValue}
+						onChange={onInputChange}
+						onKeyDown={onEnterKey}
+						className={cx(!isInputFocused && 'focused-input')}
+					/>
+					<label className='switch'>
+						<input type='checkbox' checked={isInputFocused} onChange={onToggle} />
+						<span className='slider'></span>
+					</label>
+				</div>
+			</Buttons>
+			<ListOfValues isInputFocused list={state.list} onClick={onItemClick} />
+		</main>
 	);
 };
 
