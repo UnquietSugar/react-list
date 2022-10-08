@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 import useStorage from './hooks/useStorage';
-import useControlls from './hooks/useControlls';
+import useListControlls from './hooks/useListControlls';
 import { useStoreContext } from './state/state';
 import useSetItems from './hooks/useSetItems';
+import cx from 'classnames';
 
 const App = () => {
 	const [inputValue, setInputValue] = useState<string>('');
 	const { state } = useStoreContext();
+	const [isInputFocused, toggle] = useState<boolean>(false);
 	const { setList } = useStorage();
-	const { undo, redo, clear, addListItem, addList } = useControlls();
+	const { list } = useListControlls();
 	useSetItems();
 
 	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,38 +19,53 @@ const App = () => {
 
 	const saveValue = () => {
 		if (inputValue !== '') {
-			addListItem(inputValue);
+			list.addListItem(inputValue);
 			setInputValue('');
 		}
 	};
 
-	const onEnterKey = useCallback(
-		(e: React.KeyboardEvent<HTMLInputElement>) => {
-			if (e.key === 'Enter') {
-				saveValue();
-			}
-		},
-		[inputValue]
-	);
+	const onEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			saveValue();
+		}
+	};
+
+	const onUndo = () => {
+		if (isInputFocused) {
+			list.undo();
+		}
+	};
 
 	const onClear = () => {
-		clear();
-		setInputValue('');
+		if (isInputFocused) {
+			list.clear();
+			setInputValue('');
+		}
+	};
+
+	const onRedo = () => {
+		if (isInputFocused) {
+			list.redo();
+		}
+	};
+
+	const onToggle = () => {
+		toggle(!isInputFocused);
 	};
 
 	const onItemClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
 		setInputValue(e.currentTarget.innerText);
-		const list = state.list.filter((item) => item.id !== e.currentTarget.id);
-		addList(list);
+		const newList = state.list.filter((item) => item.id !== e.currentTarget.id);
+		list.addList(newList);
 		setList(state.list);
 	};
 
 	return (
 		<div>
-			<div className='center'>
-				<button onClick={undo}>Undo</button>
+			<div className={cx('center', isInputFocused ? 'focused-list' : 'focused-input')}>
+				<button onClick={onUndo}>Undo</button>
 				<button onClick={onClear}>Clear</button>
-				<button onClick={redo}>Redo</button>
+				<button onClick={onRedo}>Redo</button>
 			</div>
 			<div className='center'>
 				<input
@@ -56,12 +73,18 @@ const App = () => {
 					value={inputValue}
 					onChange={onInputChange}
 					onKeyDown={onEnterKey}
+					className={cx(!isInputFocused && 'focused-input')}
 				/>
+				<label className='switch'>
+					<input type='checkbox' checked={isInputFocused} onClick={onToggle} />
+					<span className='slider'></span>
+				</label>
 			</div>
 			<div className='center'>
 				<button onClick={saveValue}>Save</button>
 			</div>
-			<div className='list-container'>
+			<div className={cx('list-container', isInputFocused && 'focused-list')}>
+				<p className='center'>Values:</p>
 				<ul>
 					{state.list.map((item) => (
 						<li key={item.id} id={item.id} onClick={onItemClick}>

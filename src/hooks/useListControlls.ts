@@ -51,12 +51,14 @@ const useControlls = () => {
 	};
 
 	return {
-		undo,
-		redo,
-		clear,
-		addListItem,
-		addList,
-		addHistoryList,
+		list: {
+			undo,
+			redo,
+			clear,
+			addListItem,
+			addList,
+			addHistoryList,
+		},
 	};
 };
 
